@@ -2,6 +2,7 @@
 using OrderTrackingApi.DTOs;
 using OrderTrackingApi.Interfaces;
 using OrderTrackingApi.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace OrderTrackingApi.Controllers
 {
@@ -32,6 +33,7 @@ namespace OrderTrackingApi.Controllers
         /// <param name="filter">Filter parameters (e.g., ClientName, StartDate, EndDate).</param>
         /// <returns>A list of tracking orders.</returns>
         [HttpGet]
+        [SwaggerOperation(OperationId = "GetAll", Summary = "Get all tracking orders")]
         public async Task<IActionResult> GetAllTrackings([FromQuery] TrackingFilterRequest filter)
         {
             var orders = await _queryService.GetAllTrackings(filter);
@@ -44,6 +46,7 @@ namespace OrderTrackingApi.Controllers
         /// <param name="orderNumber">The order number to search for.</param>
         /// <returns>The tracking order if found, otherwise 404 Not Found.</returns>
         [HttpGet("{orderNumber}")]
+        [SwaggerOperation(OperationId = "GetByOrderNumber", Summary = "Get a tracking order by order number")]
         public async Task<IActionResult> GetTracking(string orderNumber)
         {
             var order = await _queryService.GetTracking(orderNumber);
@@ -57,6 +60,7 @@ namespace OrderTrackingApi.Controllers
         /// <param name="trackingRequest">The tracking order details to create.</param>
         /// <returns>201 Created with the new order details, or 500 if an error occurs.</returns>
         [HttpPost]
+        [SwaggerOperation(OperationId = "CreateTracking", Summary = "Create a new tracking order")]
         public async Task<IActionResult> PostTracking(TrackingRequest trackingRequest)
         {
             try
@@ -77,6 +81,7 @@ namespace OrderTrackingApi.Controllers
         /// <param name="trackingUpdate">The updated tracking order details.</param>
         /// <returns>204 No Content if successful, 404 if not found, or 500 if an error occurs.</returns>
         [HttpPut("{orderNumber}")]
+        [SwaggerOperation(OperationId = "UpdateTracking", Summary = "Update a tracking order")]
         public async Task<IActionResult> UpdateTracking(string orderNumber, [FromBody] TrackingUpdateRequest trackingUpdate)
         {
             try
@@ -98,6 +103,7 @@ namespace OrderTrackingApi.Controllers
         /// <param name="orderNumber">The order number of the tracking order to delete.</param>
         /// <returns>204 No Content if successful, or 404 if not found.</returns>
         [HttpDelete("{orderNumber}")]
+        [SwaggerOperation(OperationId = "DeleteTracking", Summary = "Delete a tracking order")]
         public async Task<IActionResult> DeleteTracking(string orderNumber)
         {
             var order = await _queryService.GetTracking(orderNumber);
