@@ -23,6 +23,6 @@
         /// <summary>
         /// Gets or sets the updated shipping date for the order. Optional.
         /// </summary>
-        public DateTime? ShippingDate { get; set; }
+        public DateTime ShippingDate { get; set; }
     }
 }

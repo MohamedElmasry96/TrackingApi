@@ -65,8 +65,15 @@ namespace OrderTrackingApi.Controllers
         {
             try
             {
-                await _commandService.AddTracking(trackingRequest);
-                return CreatedAtAction(nameof(GetTracking), new { orderNumber = trackingRequest.OrderNumber }, trackingRequest);
+                // Add the tracking order and get the generated OrderNumber
+                var orderNumber = await _commandService.AddTracking(trackingRequest);
+                // Use the query service to get the tracking order by OrderNumber
+                var createdModel = await _queryService.GetTracking(orderNumber);
+                if (createdModel == null)
+                {
+                    return StatusCode(500, "Failed to retrieve the created tracking order.");
+                }
+                return CreatedAtAction(nameof(GetTracking), new { orderNumber = createdModel.OrderNumber }, trackingRequest);
             }
             catch (Exception ex)
             {

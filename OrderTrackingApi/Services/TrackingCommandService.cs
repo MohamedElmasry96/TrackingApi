@@ -26,20 +26,45 @@ namespace OrderTrackingApi.Services
         /// Adds a new tracking order to the database.
         /// </summary>
         /// <param name="trackingRequest">The tracking order details to add.</param>
-        public async Task AddTracking(TrackingRequest trackingRequest)
+        public async Task<string> AddTracking(TrackingRequest trackingRequest)
         {
+            // Get the last OrderNumber from the database
+            var lastOrder = await _context.Orders
+                .OrderByDescending(t => t.OrderNumber)
+                .FirstOrDefaultAsync();
+
+            // Generate the new OrderNumber (e.g., ORD001, ORD002, etc.)
+            string newOrderNumber = "ORD001"; // Default if no orders exist
+            if (lastOrder != null)
+            {
+                // Extract the number part (e.g., "001" from "ORD001")
+                string lastNumberStr = lastOrder.OrderNumber.Substring(3); // Skip "ORD"
+                if (int.TryParse(lastNumberStr, out int lastNumber))
+                {
+                    // Increment the number and format it as ORD + 3 digits (e.g., ORD002)
+                    newOrderNumber = $"ORD{(lastNumber + 1):D3}";
+                }
+            }
+
             TrackingModel model = new TrackingModel
             {
-                OrderNumber = trackingRequest.OrderNumber,
+                // Generate OrderNumber dynamically
+                OrderNumber = newOrderNumber,
+                // Generate TrackingNumbers dynamically (e.g., one tracking number for now)
+                TrackingNumbers = new List<string> { "TRK-" + Guid.NewGuid().ToString().Substring(0, 5) },
+                // Set OrderDate dynamically
+                OrderDate = DateTime.UtcNow,
+                // Take these from the request (user input)
                 ClientName = trackingRequest.ClientName,
-                TrackingNumbers = trackingRequest.TrackingNumbers,
                 Address = trackingRequest.Address,
-                OrderDate = trackingRequest.OrderDate,
                 ShippingDate = trackingRequest.ShippingDate,
                 Status = trackingRequest.Status
             };
+
             _context.Orders.Add(model);
             await _context.SaveChangesAsync();
+
+            return model.OrderNumber;
         }
 
         /// <summary>
@@ -73,11 +98,10 @@ namespace OrderTrackingApi.Services
                 if (!string.IsNullOrEmpty(trackingUpdate.Address))
                     order.Address = trackingUpdate.Address;
 
-                if (trackingUpdate.ShippingDate.HasValue)
-                    order.ShippingDate = trackingUpdate.ShippingDate.Value;
-
                 if (!string.IsNullOrEmpty(trackingUpdate.Status))
                     order.Status = trackingUpdate.Status;
+
+                order.ShippingDate = trackingUpdate.ShippingDate;
 
                 await _context.SaveChangesAsync();
             }

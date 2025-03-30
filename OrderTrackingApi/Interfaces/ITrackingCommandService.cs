@@ -11,7 +11,7 @@ namespace OrderTrackingApi.Interfaces
         /// Adds a new tracking order to the database.
         /// </summary>
         /// <param name="trackingRequest">The tracking order details to add.</param>
-        Task AddTracking(TrackingRequest trackingRequest);
+        Task<string> AddTracking(TrackingRequest trackingRequest);
 
         /// <summary>
         /// Updates an existing tracking order by its order number.
