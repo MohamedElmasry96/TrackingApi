@@ -11,7 +11,7 @@ namespace OrderTrackingApi.Models
         /// Gets or sets the unique order number (primary key).
         /// </summary>
         [Key]
-        public string OrderNumber { get; set; }
+        public required string OrderNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the list of tracking numbers associated with the order.
@@ -21,12 +21,12 @@ namespace OrderTrackingApi.Models
         /// <summary>
         /// Gets or sets the name of the client who placed the order.
         /// </summary>
-        public string ClientName { get; set; }
+        public required string ClientName { get; set; }
 
         /// <summary>
         /// Gets or sets the delivery address for the order.
         /// </summary>
-        public string Address { get; set; }
+        public required string Address { get; set; }
 
         /// <summary>
         /// Gets or sets the date when the order was placed.
@@ -41,6 +41,6 @@ namespace OrderTrackingApi.Models
         /// <summary>
         /// Gets or sets the status of the tracking order (e.g., "Pending", "Shipped").
         /// </summary>
-        public string Status { get; set; }
+        public required string Status { get; set; }
     }
 }
